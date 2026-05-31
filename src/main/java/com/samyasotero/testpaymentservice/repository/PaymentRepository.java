@@ -1,6 +1,6 @@
-package com.example.testpaymentservice.repository;
+package com.samyasotero.testpaymentservice.repository;
 
-import com.example.testpaymentservice.model.Payment;
+import com.samyasotero.testpaymentservice.model.Payment;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
