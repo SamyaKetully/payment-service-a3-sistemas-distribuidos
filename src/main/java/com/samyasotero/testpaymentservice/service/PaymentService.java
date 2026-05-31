@@ -23,14 +23,11 @@ public class PaymentService {
     public Payment process(Payment payment) {
         payment.setStatus(PaymentStatus.PENDING);
 
-        // 1. Pegamos o método que o usuário enviou (como String)
-        String metodoEnviado = payment.getPaymentMethod().name(); // ou apenas getPaymentMethod() se já for String
+        String metodoEnviado = payment.getPaymentMethod().name();
 
-        // 2. Comparamos se o método enviado NÃO existe dentro do nosso Enum PaymentMethod
         boolean metodoValido = Arrays.stream(PaymentMethod.values())
                 .anyMatch(enumItem -> enumItem.name().equals(metodoEnviado));
 
-        // 3. O nosso novo IF: Se não for válido (diferente dos itens do Enum), lançamos o erro
         if (!metodoValido) {
             throw new IllegalArgumentException(
                     "Método de pagamento '" + metodoEnviado + "' não suportado. " +
