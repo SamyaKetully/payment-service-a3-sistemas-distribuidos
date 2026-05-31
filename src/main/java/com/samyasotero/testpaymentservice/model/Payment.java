@@ -1,7 +1,7 @@
-package com.example.testpaymentservice.model;
+package com.samyasotero.testpaymentservice.model;
 
-import com.example.testpaymentservice.model.enums.PaymentMethod;
-import com.example.testpaymentservice.model.enums.PaymentStatus;
+import com.samyasotero.testpaymentservice.model.enums.PaymentMethod;
+import com.samyasotero.testpaymentservice.model.enums.PaymentStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
