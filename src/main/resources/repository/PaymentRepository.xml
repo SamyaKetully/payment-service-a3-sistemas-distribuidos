@@ -16,23 +16,23 @@
     </resultMap>
 
     <insert id="save" keyProperty="id" keyColumn="id">
-        INSERT INTO payments (id, order_id, user_id, amount, payment_method, status, provider_ref, created_at, updated_at)
+        INSERT INTO payment (id, order_id, user_id, amount, payment_method, status, provider_ref, created_at, updated_at)
         VALUES (#{id}, #{orderId}, #{userId}, #{amount}, #{paymentMethod}, #{status}, #{providerRef}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     </insert>
 
     <select id="findById" resultMap="PaymentResultMap">
         SELECT id, order_id, user_id, amount, payment_method, status, provider_ref, created_at, updated_at
-        FROM payments
+        FROM payment
         WHERE id = #{id}
     </select>
 
     <select id="findAll" resultMap="PaymentResultMap">
         SELECT id, order_id, user_id, amount, payment_method, status, provider_ref, created_at, updated_at
-        FROM payments
+        FROM payment
     </select>
 
     <update id="update">
-        UPDATE payments
+        UPDATE payment
         SET
         order_id = #{orderId},
         user_id = #{userId},
@@ -45,7 +45,7 @@
     </update>
 
     <delete id="deleteById">
-        DELETE FROM payments
+        DELETE FROM payment
         WHERE id = #{id}
     </delete>
 
