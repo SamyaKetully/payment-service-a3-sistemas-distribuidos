@@ -5,10 +5,12 @@ import com.samyasotero.testpaymentservice.model.enums.PaymentMethod;
 import com.samyasotero.testpaymentservice.model.enums.PaymentStatus;
 import com.samyasotero.testpaymentservice.repository.PaymentRepository;
 import com.samyasotero.testpaymentservice.strategy.PaymentStrategy;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.Map;
 
+@Service
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
