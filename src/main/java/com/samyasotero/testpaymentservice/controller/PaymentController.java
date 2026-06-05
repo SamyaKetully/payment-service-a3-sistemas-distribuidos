@@ -1,3 +1,4 @@
+/*
 package com.samyasotero.testpaymentservice.controller;
 
 import com.samyasotero.testpaymentservice.dto.PaymentRequestDTO;
@@ -42,3 +43,4 @@ public class PaymentController {
         return ResponseEntity.ok(processedPayment);
     }
 }
+*/

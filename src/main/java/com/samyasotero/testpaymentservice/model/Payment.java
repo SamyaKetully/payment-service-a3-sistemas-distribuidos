@@ -4,12 +4,13 @@ import com.samyasotero.testpaymentservice.model.enums.PaymentMethod;
 import com.samyasotero.testpaymentservice.model.enums.PaymentStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class Payment {
 
-    private Long id;
-    private Long orderId;
-    private Long userId;
+    private UUID id;
+    private UUID orderId;
+    private UUID userId;
     private BigDecimal amount;
     private PaymentMethod paymentMethod;
     private PaymentStatus status;
@@ -21,27 +22,27 @@ public class Payment {
     }
 
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public Long getOrderId() {
+    public UUID getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(UUID orderId) {
         this.orderId = orderId;
     }
 
-    public Long getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 
