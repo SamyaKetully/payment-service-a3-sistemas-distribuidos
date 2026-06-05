@@ -10,8 +10,6 @@ public class CreditCardStrategy implements PaymentStrategy {
 
     @Override
     public void processPayment(Payment payment) {
-        System.out.println("Processando Cartão de Crédito na adquirente para o pedido: " + payment.getOrderId());
-
         payment.setProviderRef("CC-REF-" + UUID.randomUUID().toString());
         payment.setStatus(PaymentStatus.APPROVED);
     }

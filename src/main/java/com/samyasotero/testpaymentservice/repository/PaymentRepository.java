@@ -4,17 +4,18 @@ import com.samyasotero.testpaymentservice.model.Payment;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.UUID;
 
 @Mapper
 public interface PaymentRepository {
 
     void save(Payment payment);
 
-    Payment findById(Long id);
+    Payment findById(UUID id);
 
     List<Payment> findAll();
 
     void update(Payment payment);
 
-    void deleteById(Long id);
+    void deleteById(UUID id);
 }

@@ -12,8 +12,6 @@ public class PixStrategy implements PaymentStrategy {
 
     @Override
     public void processPayment(Payment payment) {
-        System.out.println("Gerando QR Code PIX para o pedido: " + payment.getOrderId());
-
         payment.setProviderRef("PIX-REF-" + UUID.randomUUID().toString());
         payment.setStatus(PaymentStatus.PENDING);
     }

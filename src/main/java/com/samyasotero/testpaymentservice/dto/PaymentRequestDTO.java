@@ -1,21 +1,21 @@
 package com.samyasotero.testpaymentservice.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import org.jetbrains.annotations.NotNull;
+import com.samyasotero.testpaymentservice.model.enums.PaymentStatus;
+
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class PaymentRequestDTO {
 
+    private Long id;
     private Long orderId;
-
-    @NotNull
     private Long userId;
-
-    @NotNull
     private BigDecimal amount;
-
-    @NotBlank
     private String paymentMethod;
+    private PaymentStatus status;
+    private String providerRef;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public PaymentRequestDTO() {
     }
@@ -31,4 +31,32 @@ public class PaymentRequestDTO {
 
     public String getPaymentMethod() { return paymentMethod; }
     public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+
+    public Long getId() {return id;}
+
+    public void setId(Long id) {this.id = id;}
+
+    public PaymentStatus getStatus() {return status;}
+
+    public void setStatus(PaymentStatus status) {this.status = status;}
+
+    public String getProviderRef() {return providerRef;}
+
+    public void setProviderRef(String providerRef) {this.providerRef = providerRef;}
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
