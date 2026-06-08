@@ -4,10 +4,13 @@ import com.samyasotero.testpaymentservice.model.Payment;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Mapper
 public interface PaymentRepository {
+
+    Optional<Payment> findByOrderId(String orderId);
 
     void save(Payment payment);
 

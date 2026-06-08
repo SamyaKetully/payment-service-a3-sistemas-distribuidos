@@ -26,6 +26,12 @@
         WHERE id = #{id}
     </select>
 
+    <select id="findByOrderId" resultMap="PaymentResultMap">
+        SELECT id, order_id, user_id, amount, payment_method, status, provider_ref, created_at, updat_at
+        FROM payment
+        WHERE order_id = #{orderId}
+    </select>
+
     <select id="findAll" resultMap="PaymentResultMap">
         SELECT id, order_id, user_id, amount, payment_method, status, provider_ref, created_at, updat_at
         FROM payment
