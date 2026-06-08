@@ -1,11 +1,13 @@
 package com.samyasotero.testpaymentservice.service;
 
 import com.samyasotero.testpaymentservice.dto.ProcessPaymentDTO;
+import com.samyasotero.testpaymentservice.dto.TicketEventDTO;
 import com.samyasotero.testpaymentservice.model.Payment;
 import com.samyasotero.testpaymentservice.model.enums.PaymentStatus;
 import com.samyasotero.testpaymentservice.strategy.PaymentStrategy;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,31 +28,30 @@ public class PaymentService {
 
     public void process(ProcessPaymentDTO evento, String messageGroupId) {
 
-        Optional<Payment> existing = transactionService.findByOrderId(String.valueOf(evento.orderId()));
-
+        Optional<Payment> existing = transactionService.findByOrderId(evento.orderId());
         if (existing.isPresent()) {
             System.out.println("Idempotência: Pagamento já processado para a Ordem " + evento.orderId());
-            eventPublisher.publishPaymentResult(existing.get(), messageGroupId);
             return;
+        }
+
+        PaymentStrategy strategy = paymentStrategies.get(evento.paymentMethod());
+        if (strategy == null) {
+            throw new IllegalArgumentException("Método de pagamento não suportado: " + evento.paymentMethod());
         }
 
         Payment payment = transactionService.createPendingPayment(evento);
 
-        PaymentStrategy strategy = paymentStrategies.get(payment.getPaymentMethod().name());
-        if (strategy == null) {
-            transactionService.updatePaymentStatus(payment.getId(), PaymentStatus.REJECTED);
-            throw new IllegalArgumentException("Método de pagamento não encontrado.");
-        }
-
         try {
-            strategy.processPayment(payment);
-            payment.setStatus(PaymentStatus.APPROVED);
+            List<TicketEventDTO> ticketsCalculados = strategy.processPayment(payment, evento.tickets(), evento.installments());
+
+            transactionService.updateStatusAndAmount(payment.getId(), PaymentStatus.APPROVED, payment.getAmount(), payment.getProviderRef());
+
+            eventPublisher.publishPaymentResult(payment, ticketsCalculados, messageGroupId);
+
         } catch (Exception e) {
-            payment.setStatus(PaymentStatus.REJECTED);
+
+            transactionService.updateStatusByOrderId(evento.orderId(), PaymentStatus.REJECTED);
+            System.out.println("Erro ao processar pagamento: " + e.getMessage());
         }
-
-        transactionService.updatePaymentStatus(payment.getId(), payment.getStatus());
-
-        eventPublisher.publishPaymentResult(payment, messageGroupId);
     }
 }
