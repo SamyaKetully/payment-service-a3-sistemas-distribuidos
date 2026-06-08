@@ -5,7 +5,6 @@ import java.util.UUID;
 
 public record ProcessPaymentDTO (
         UUID orderId,
-        UUID seatId,
         UUID userId,
         BigDecimal amount,
         String paymentMethod
