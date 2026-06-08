@@ -1,7 +1,11 @@
 package com.samyasotero.testpaymentservice.strategy;
+import com.samyasotero.testpaymentservice.dto.TicketEventDTO;
 import com.samyasotero.testpaymentservice.model.Payment;
+
+import java.util.List;
 
 public interface PaymentStrategy {
 
-    void processPayment(Payment payment);
+    List<TicketEventDTO> processPayment(Payment payment, List<TicketEventDTO> tickets, Integer installments);
+
 }

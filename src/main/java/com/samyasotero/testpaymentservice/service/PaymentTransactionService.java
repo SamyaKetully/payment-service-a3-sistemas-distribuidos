@@ -1,6 +1,5 @@
 package com.samyasotero.testpaymentservice.service;
 
-import com.fasterxml.uuid.Generators;
 import com.samyasotero.testpaymentservice.dto.ProcessPaymentDTO;
 import com.samyasotero.testpaymentservice.model.Payment;
 import com.samyasotero.testpaymentservice.model.enums.PaymentMethod;
@@ -9,6 +8,7 @@ import com.samyasotero.testpaymentservice.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,9 +22,11 @@ public class PaymentTransactionService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Payment> findByOrderId(String orderId) {
+    public Optional<Payment> findByOrderId(UUID orderId) {
 
-        return paymentRepository.findByOrderId(orderId);
+        Payment payment = paymentRepository.findByOrderId(orderId);
+        return Optional.ofNullable(payment);
+
     }
 
     @Transactional
@@ -40,7 +42,7 @@ public class PaymentTransactionService {
 
         payment.setOrderId(evento.orderId());
         payment.setUserId(evento.userId());
-        payment.setAmount(evento.amount());
+        payment.setAmount(java.math.BigDecimal.ZERO);
 
         payment.setPaymentMethod(PaymentMethod.valueOf(evento.paymentMethod()));
         payment.setStatus(PaymentStatus.PENDING);
@@ -50,13 +52,35 @@ public class PaymentTransactionService {
     }
 
     @Transactional
-    public void updatePaymentStatus(UUID paymentId, PaymentStatus status) {
-        Optional<Payment> paymentOpt = Optional.ofNullable(paymentRepository.findById(paymentId));
+    public void updateStatusByOrderId(UUID orderId, PaymentStatus newStatus) {
 
-        if (paymentOpt.isPresent()) {
-            Payment payment = paymentOpt.get();
-            payment.setStatus(status);
-            paymentRepository.update(payment);
+        Payment payment = paymentRepository.findByOrderId(orderId);
+
+        if (payment == null) {
+            throw new RuntimeException("Pagamento não encontrado para o pedido: " + orderId);
         }
+
+        payment.setStatus(newStatus);
+        paymentRepository.update(payment);
     }
+
+    @Transactional
+    public void updateStatusAndAmount(UUID id, PaymentStatus status, BigDecimal amount, String providerRef) {
+
+        Payment payment = paymentRepository.findById(id);
+
+        if (payment == null) {
+            throw new RuntimeException("Pagamento não encontrado para o ID: " + id);
+        }
+
+        payment.setStatus(status);
+        payment.setAmount(amount);
+        payment.setProviderRef(providerRef);
+
+        paymentRepository.update(payment);
+
+        System.out.println(" Banco atualizado! Pedido: " + payment.getOrderId() + " | Valor Final: R$ " + amount);
+    }
+
+
 }
