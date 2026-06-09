@@ -5,6 +5,8 @@ import com.samyasotero.testpaymentservice.model.Payment;
 import com.samyasotero.testpaymentservice.model.enums.PaymentMethod;
 import com.samyasotero.testpaymentservice.model.enums.PaymentStatus;
 import com.samyasotero.testpaymentservice.repository.PaymentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ import java.util.UUID;
 @Service
 public class PaymentTransactionService {
 
+    private static final Logger log = LoggerFactory.getLogger(PaymentTransactionService.class);
     private final PaymentRepository paymentRepository;
 
     public PaymentTransactionService(PaymentRepository paymentRepository) {
@@ -33,6 +36,7 @@ public class PaymentTransactionService {
     public Payment createPendingPayment(ProcessPaymentDTO evento) {
 
         if (evento.paymentMethod() == null) {
+            log.error("Metodo de pagamento nulo bloqueado na criacao | orderId: {}", evento.orderId());
             throw new IllegalArgumentException("O método de pagamento não pode ser nulo! Verifique o JSON da requisição.");
         }
 
@@ -48,6 +52,9 @@ public class PaymentTransactionService {
         payment.setStatus(PaymentStatus.PENDING);
 
         paymentRepository.save(payment);
+
+        log.info("Novo pagamento PENDING registrado no banco de dados | orderId: {}", payment.getOrderId());
+
         return payment;
     }
 
@@ -57,11 +64,14 @@ public class PaymentTransactionService {
         Payment payment = paymentRepository.findByOrderId(orderId);
 
         if (payment == null) {
+            log.error("Tentativa de atualizar status de um pagamento inexistente | orderId: {}", orderId);
             throw new RuntimeException("Pagamento não encontrado para o pedido: " + orderId);
         }
 
         payment.setStatus(newStatus);
         paymentRepository.update(payment);
+
+        log.info("Estado do pagamento atualizado no banco de dados | orderId: {} | newStatus: {}", orderId, newStatus);
     }
 
     @Transactional
@@ -70,6 +80,7 @@ public class PaymentTransactionService {
         Payment payment = paymentRepository.findById(id);
 
         if (payment == null) {
+            log.error("Tentativa de atualizar valores de um pagamento inexistente | paymentId: {}", id);
             throw new RuntimeException("Pagamento não encontrado para o ID: " + id);
         }
 
@@ -79,7 +90,7 @@ public class PaymentTransactionService {
 
         paymentRepository.update(payment);
 
-        System.out.println(" Banco atualizado! Pedido: " + payment.getOrderId() + " | Valor Final: R$ " + amount);
+        log.info("Pagamento consolidado no banco de dados | orderId: {} | newStatus: {} | amount: {}", payment.getOrderId(), status, amount);
     }
 
 
