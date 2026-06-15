@@ -15,7 +15,7 @@ import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 @Configuration
 public class SqsConfig {
 
-    @Value("${custom.aws.access-key}")
+    /*@Value("${custom.aws.access-key}")
     private String accessKey;
 
     @Value("${custom.aws.secret-key}")
@@ -34,7 +34,7 @@ public class SqsConfig {
                 .credentialsProvider(StaticCredentialsProvider.create(credenciais))
                 .build();
     }
-
+*/
     @Bean
     public SqsMessagingMessageConverter sqsMessagingMessageConverter() {
         JacksonJsonMessageConverter jacksonConverter = new JacksonJsonMessageConverter();
