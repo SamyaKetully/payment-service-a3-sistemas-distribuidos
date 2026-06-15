@@ -6,7 +6,6 @@ import java.util.UUID;
 public record ProcessPaymentDTO (
         UUID sagaId,
         UUID orderId,
-        UUID userId,
         Integer installments,
         String paymentMethod,
         List<TicketEventDTO> tickets
