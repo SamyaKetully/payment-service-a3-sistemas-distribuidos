@@ -16,11 +16,11 @@ public class PixStrategy implements PaymentStrategy {
         BigDecimal totalAmount = BigDecimal.ZERO;
         List<TicketEventDTO> processedTickets = new ArrayList<>();
 
-        for (TicketEventDTO ticket : tickets) {
+        for (TicketEventDTO ticketlist : tickets) {
 
-            BigDecimal precoFinal = ticket.ticketPrice();
+            BigDecimal precoFinal = ticketlist.ticketPrice();
 
-            processedTickets.add(ticket.withFinalPrice(precoFinal));
+            processedTickets.add(ticketlist.withFinalPrice(precoFinal));
             totalAmount = totalAmount.add(precoFinal);
         }
 

@@ -8,6 +8,6 @@ public record ProcessPaymentDTO (
         UUID orderId,
         Integer installments,
         String paymentMethod,
-        List<TicketEventDTO> tickets
+        List<TicketEventDTO> ticketlist
 ) {}
 
