@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 public class PaymentQueueListener {
 
     private static final Logger log = LoggerFactory.getLogger(PaymentQueueListener.class);
-
     private final PaymentService paymentService;
 
     public PaymentQueueListener(PaymentService paymentService) {
@@ -24,15 +23,12 @@ public class PaymentQueueListener {
             ProcessPaymentDTO evento,
             @Header("Sqs_Msa_MessageGroupId") String messageGroupId) {
 
-        paymentService.process(evento, messageGroupId);
-        System.out.println(">>>>>> O LISTENER FOI CHAMADO! <<<<<<");
-        log.info("Iniciando processamento de requisicao de pagamento | orderId: {}", evento.orderId());
+        log.info("Recebida mensagem SQS para processar pagamento | orderId: {}", evento.orderId());
 
         try {
             paymentService.process(evento, messageGroupId);
         } catch (Exception e) {
             log.error("Falha inesperada no listener ao processar a mensagem | orderId: {}", evento.orderId(), e);
         }
-
     }
 }
