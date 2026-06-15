@@ -1,0 +1,1 @@
+ALTER TABLE `payment` MODIFY `provider_ref` VARCHAR(100) DEFAULT NULL;

@@ -51,7 +51,7 @@ public class PaymentService {
         Payment payment = transactionService.createPendingPayment(evento);
 
         try {
-            List<TicketEventDTO> ticketsCalculados = strategy.processPayment(payment, evento.ticketlist(), evento.installments());
+            List<TicketEventDTO> ticketsCalculados = strategy.processPayment(payment, evento.ticketList(), evento.installments());
 
             transactionService.updateStatusAndAmount(payment.getId(), PaymentStatus.APPROVED, payment.getAmount(), payment.getProviderRef());
 
