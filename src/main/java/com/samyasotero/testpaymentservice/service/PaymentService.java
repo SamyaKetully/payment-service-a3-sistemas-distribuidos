@@ -16,10 +16,11 @@ import java.util.Optional;
 @Service
 public class PaymentService {
 
+    private static final Logger log = LoggerFactory.getLogger(PaymentService.class);
+
     private final PaymentTransactionService transactionService;
     private final PaymentEventPublisher eventPublisher;
     private final Map<String, PaymentStrategy> paymentStrategies;
-    private static final Logger log = LoggerFactory.getLogger(PaymentService.class);
 
     public PaymentService(PaymentTransactionService transactionService,
                           PaymentEventPublisher eventPublisher,
@@ -35,14 +36,15 @@ public class PaymentService {
 
         Optional<Payment> existing = transactionService.findByOrderId(evento.orderId());
         if (existing.isPresent()) {
-            log.info("Processamento ignorado por idempotencia. Pagamento ja existente | orderId: {}", evento.orderId());            return;
+            log.info("Processamento ignorado por idempotencia. Pagamento ja existente | orderId: {}", evento.orderId());
+            return;
         }
 
-        log.info("Calculando taxas de pagamento | orderId: {} | paymentMethod: {}", evento.orderId(), evento.paymentMethod());
+        log.info("Iniciando processamento de pagamento | orderId: {} | paymentMethod: {}", evento.orderId(), evento.paymentMethod());
 
         PaymentStrategy strategy = paymentStrategies.get(evento.paymentMethod());
         if (strategy == null) {
-            log.error("Tentativa de processamento com metodo não suportado | orderId: {} | paymentMethod: {}", evento.orderId(), evento.paymentMethod());
+            log.warn("Regra de negocio falhou: Metodo de pagamento invalido ou nao suportado | orderId: {} | paymentMethod: {}", evento.orderId(), evento.paymentMethod());
             throw new IllegalArgumentException("Método de pagamento não suportado: " + evento.paymentMethod());
         }
 
@@ -59,10 +61,10 @@ public class PaymentService {
             eventPublisher.publishPaymentResult(payment, ticketsCalculados, messageGroupId);
 
             long tempoExecucaoMs = System.currentTimeMillis() - tempoInicio;
-            log.info("Pagamento processado com sucesso | orderId: {} | finalAmount: {} | tempoExecucaoMs: {}", payment.getOrderId(), payment.getAmount(), tempoExecucaoMs);
+            log.info("Pagamento aprovado com sucesso! Publicando evento na saga | orderId: {} | finalAmount: {} | tempoExecucaoMs: {}", payment.getOrderId(), payment.getAmount(), tempoExecucaoMs);
 
         } catch (Exception e) {
-            log.error("Falha ao processar pagamento. Atualizando status para REJECTED | orderId: {} | errorMessage: {}", evento.orderId(), e.getMessage(), e);
+            log.error("Falha critica ao processar pagamento. Atualizando status para REJECTED | orderId: {} | errorMessage: {}", evento.orderId(), e.getMessage(), e);
             transactionService.updateStatusByOrderId(evento.orderId(), PaymentStatus.REJECTED);
         }
     }
