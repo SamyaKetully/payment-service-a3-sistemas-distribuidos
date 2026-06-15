@@ -45,7 +45,6 @@ public class PaymentTransactionService {
         payment.setId(com.fasterxml.uuid.Generators.timeBasedEpochGenerator().generate());
 
         payment.setOrderId(evento.orderId());
-        payment.setUserId(evento.userId());
         payment.setAmount(java.math.BigDecimal.ZERO);
 
         payment.setPaymentMethod(PaymentMethod.valueOf(evento.paymentMethod()));

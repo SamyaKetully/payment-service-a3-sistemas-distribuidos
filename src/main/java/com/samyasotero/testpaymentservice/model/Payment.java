@@ -10,7 +10,6 @@ public class Payment {
 
     private UUID id;
     private UUID orderId;
-    private UUID userId;
     private BigDecimal amount;
     private PaymentMethod paymentMethod;
     private PaymentStatus status;
@@ -36,14 +35,6 @@ public class Payment {
 
     public void setOrderId(UUID orderId) {
         this.orderId = orderId;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
     }
 
     public BigDecimal getAmount() {
